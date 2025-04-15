@@ -3,35 +3,28 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code 
-      uses: actions/checkout@v3
+      - name: Checkout code 
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with: 
-        node-version: '22.x'
-      
-    - name: Install dependencies
-      run: npm install
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with: 
+          node-version: '18'  # Use stable version
 
-    - name: Build the app
-      run: npm run build 
-    
-    - name: Deploy with gh-pages
-      run: |
-        git config --global user.email "support+actions@github.com"
-        git config --global user.name "github-actions-bot"
-        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-        npm run deploy
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install dependencies
+        run: npm install
 
+      - name: Build the app
+        run: npm run build  # or `npm run build` if you're using Vite
 
+      - name: Deploy to GitHub Pages 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist  # or ./build if you're using CRA
